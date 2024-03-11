@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %} Edição de receita {% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background-color: rgb(240, 240, 240);
+    }
+</style>
+<form method="POST" id="recipeForm" action="">
+    <div class="card container-sm p-3 mb-2">
+        <h3 class="text-center">Editar receita</h3>
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.title.label('Título') }}
+            {{ form.title(size=40) }}
+            {% for error in form.title.errors %}
+            <p style="color: red;">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div>
+            {{ form.description.label('Descrição') }}
+            {{ form.description(size=40) }}
+            {% for error in form.description.errors %}
+            <p style="color: red;">{{ error }}</p>
+            {% endfor %}
+        </div>
+
+        <div class="form-inline mt-2">
+            <div class="form-group mr-2">
+                {{ form.preparation_time.label('Tempo de preparo: ') }}
+                {{ form.preparation_time() }}
+                {% for error in form.preparation_time.errors %}
+                <p style="color: red;">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.portion.label('Porções: ') }}
+                {{ form.portion() }}
+                {% for error in form.portion.errors %}
+                <p style="color: red;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="card container-sm p-3 mb-2">
+        <div id="ingredientsContainer">
+            <h4>Ingredientes:</h4>
+            <div class="ingredient">
+                <input type="text" name="ingredients-0-title" placeholder="Nome do Ingrediente" required>
+                <button type="button" class="removeIngredient btn btn-danger mb-1">Remover</button>
+            </div>
+        </div>
+        <div>
+            <button type="button" id="addIngredient" class="btn btn-secondary mb-2">Adicionar Ingrediente</button>
+        </div>
+    </div>
+
+    <div class="card container-sm p-3 mb-2">
+        <div id="instructionsContainer">
+            <h4>Instruções:</h4>
+            <div class="ingredient">
+                <input type="text" name="instructions-0-title" placeholder="Instrução" required>
+                <button type="button" class="removeInstruction btn btn-danger mb-1">Remover</button>
+            </div>
+        </div>
+        <div>
+            <button type="button" id="addInstruction" class="btn btn-secondary mb-2">Adicionar Instruções</button>
+        </div>
+    </div>
+
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+    $(document).ready(function () {
+        let ingredientIndex = 0;
+        let instructionIndex = 0;
+
+        $('#addIngredient').click(function () {
+            const newIngredient = `
+                <div class="ingredient">
+                    <input type="text" name="ingredients-${ingredientIndex + 1}-title" placeholder="Nome do Ingrediente" required>
+                    <button type="button" class="removeIngredient btn btn-danger mb-1">Remover</button>
+                </div>
+            `;
+            $('#ingredientsContainer').append(newIngredient);
+            ingredientIndex++;
+        });
+
+        $('#addInstruction').click(function () {
+            const newInstruction = `
+                <div class="instruction">
+                    <input type="text" name="instructions-${instructionIndex + 1}-title" placeholder="Instrução" required>
+                    <button type="button" class="removeInstruction btn btn-danger mb-1">Remover</button>
+                </div>
+            `;
+            $('#instructionsContainer').append(newInstruction);
+            instructionIndex++;
+        });
+
+        $(document).on('click', '.removeIngredient', function () {
+            $(this).parent().remove();
+            ingredientIndex--;
+        });
+
+        $(document).on('click', '.removeInstruction', function () {
+            $(this).parent().remove();
+            instructionIndex--;
+        });
+    });
+</script>
+{% endblock %}
